@@ -14,7 +14,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: List installed Xcode versions (optional)
+      - name: List installed Xcode versions
         run: ls /Applications | grep Xcode
 
       - name: Select Xcode 15.3
@@ -33,3 +33,47 @@ jobs:
 
       - name: Build MacCatalyst project
         run: dotnet build -f net8.0-maccatalyst --configuration Release
+
+      - name: Find and verify build outputs
+        id: find-outputs
+        run: |
+          # Search for the .app bundle
+          APP_BUNDLE=$(find . -path "*/bin/*/net8.0-maccatalyst/*.app" -type d | head -1)
+          
+          if [ -z "$APP_BUNDLE" ]; then
+            echo "::error::App bundle not found!"
+            echo "Searching in:"
+            find . -name "bin" -type d | xargs ls -R
+            exit 1
+          fi
+
+          # Create output directory
+          OUTPUT_DIR="$GITHUB_WORKSPACE/build-output"
+          mkdir -p "$OUTPUT_DIR"
+          
+          # Copy the app bundle to output directory
+          cp -R "$APP_BUNDLE" "$OUTPUT_DIR/"
+          
+          # Find all DLLs and related files
+          find "$(dirname "$APP_BUNDLE")" -type f \( -name "*.dll" -o -name "*.pdb" -o -name "*.json" \) -exec cp {} "$OUTPUT_DIR/" \;
+          
+          # Create ZIP archive
+          cd "$OUTPUT_DIR"
+          zip -r app_bundle.zip .
+          
+          # Set output variables
+          echo "APP_PATH=$(basename "$APP_BUNDLE")" >> $GITHUB_OUTPUT
+          echo "OUTPUT_DIR=$OUTPUT_DIR" >> $GITHUB_OUTPUT
+          echo "ZIP_PATH=$OUTPUT_DIR/app_bundle.zip" >> $GITHUB_OUTPUT
+          
+          # List contents for verification
+          echo "Build outputs:"
+          ls -lR "$OUTPUT_DIR"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-app-bundle
+          path: |
+            ${{ steps.find-outputs.outputs.OUTPUT_DIR }}/*
+          if-no-files-found: error
