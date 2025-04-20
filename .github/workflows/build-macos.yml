@@ -1,37 +1,29 @@
-name: Build .NET MAUI macOS App
+name: Build macOS
 
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build-macos:
-    runs-on: macos-latest
+    runs-on: macos-13
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout repo
+      uses: actions/checkout@v3
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '9.0.x'
+    - name: Select Xcode 15.3
+      run: sudo xcode-select -s /Applications/Xcode_15.3.app
 
-      - name: Install MAUI Workloads
-        run: dotnet workload restore
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '9.0.x'
 
-      - name: Restore NuGet packages
-        run: dotnet restore
+    - name: Install MAUI Workload
+      run: dotnet workload restore
 
-      - name: Build MAUI macOS app
-        run: dotnet publish auto_cliker/auto_cliker.csproj -f:net9.0-maccatalyst -c:Release -o:publish-macos
-
-      - name: List output files (for debugging)
-        run: ls -R publish-macos
-
-      - name: Upload macOS Build
-        uses: actions/upload-artifact@v4
-        with:
-          name: macos-build
-          path: publish-macos/
+    - name: Build for MacCatalyst
+      run: dotnet build -f net9.0-maccatalyst --configuration Release
