@@ -9,7 +9,7 @@ using Microsoft.Maui.Dispatching;
 namespace auto_cliker;
 
 using System.Reflection.Metadata;
-
+ 
 #if WINDOWS
 using System.Runtime.InteropServices;
 #elif MACCATALYST
