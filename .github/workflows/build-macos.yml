@@ -14,6 +14,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: List installed Xcode versions (optional)
+        run: ls /Applications | grep Xcode
+
       - name: Select Xcode 15.3
         run: sudo xcode-select -s /Applications/Xcode_15.3.app
 
@@ -25,30 +28,8 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
-      - name: Restore .NET workloads
+      - name: Restore workloads
         run: dotnet workload restore
 
       - name: Build MacCatalyst project
-        run: |
-          dotnet build auto_cliker.csproj -f net8.0-maccatalyst --configuration Release
-          echo "Build output:"
-          find . -name "*.app" -o -name "*.dll"
-
-      - name: Find and zip .app
-        run: |
-          APP_PATH=$(find . -name "auto_cliker.app" | head -1)
-          if [ -z "$APP_PATH" ]; then
-            echo "::error::.app bundle not found!"
-            exit 1
-          fi
-          cd $(dirname "$APP_PATH")
-          zip -r app.zip auto_cliker.app
-          ls -lh
-
-      - name: Upload built .app
-        uses: actions/upload-artifact@v4
-        with:
-          name: macos-app
-          path: |
-            **/app.zip
-            **/auto_cliker.app
+        run: dotnet build -f net8.0-maccatalyst --configuration Release
