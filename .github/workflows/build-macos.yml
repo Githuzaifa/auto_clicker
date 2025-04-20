@@ -29,18 +29,26 @@ jobs:
         run: dotnet workload restore
 
       - name: Build MacCatalyst project
-        run: dotnet build auto_cliker.csproj -f net8.0-maccatalyst --configuration Release
-
-      - name: List .app bundle paths
-        run: find . -name "*.app"
-
-      - name: Zip built .app
         run: |
-          cd auto_cliker/bin/Release/net8.0-maccatalyst/
+          dotnet build auto_cliker.csproj -f net8.0-maccatalyst --configuration Release
+          echo "Build output:"
+          find . -name "*.app" -o -name "*.dll"
+
+      - name: Find and zip .app
+        run: |
+          APP_PATH=$(find . -name "auto_cliker.app" | head -1)
+          if [ -z "$APP_PATH" ]; then
+            echo "::error::.app bundle not found!"
+            exit 1
+          fi
+          cd $(dirname "$APP_PATH")
           zip -r app.zip auto_cliker.app
+          ls -lh
 
       - name: Upload built .app
         uses: actions/upload-artifact@v4
         with:
           name: macos-app
-          path: auto_cliker/bin/Release/net8.0-maccatalyst/app.zip
+          path: |
+            **/app.zip
+            **/auto_cliker.app
