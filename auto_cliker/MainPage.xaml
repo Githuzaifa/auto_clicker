@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="auto_cliker.MainPage"
+             Title="Auto Clicker">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30" Spacing="20">
+
+            <Label Text="Auto Clicker"
+                   FontSize="32"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
+
+            <!-- Click Speed Input -->
+            <HorizontalStackLayout>
+                <Label Text="Click Speed:"
+                       VerticalOptions="Center"/>
+                <Entry x:Name="ClickSpeedEntry"
+                       Placeholder="e.g., 500"
+                       Keyboard="Numeric"
+                       WidthRequest="100" />
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout>
+                <Label Text="Repeat Count:"
+           VerticalOptions="Center"/>
+                <Entry x:Name="RepeatCountEntry"
+           Placeholder="e.g., 10"
+           Keyboard="Numeric"
+           WidthRequest="100" />
+                <Button Text="Stop"
+            Clicked="OnStopClicked"
+            BackgroundColor="Red"
+            TextColor="White"
+            Margin="10,0,0,0"/>
+            </HorizontalStackLayout>
+
+            <!-- Click Point 1 -->
+            <Label Text="Click Point 1 Coordinates (X, Y)" FontAttributes="Bold"/>
+            <HorizontalStackLayout Spacing="10">
+                <Entry x:Name="Point1XEntry" Placeholder="X" Keyboard="Numeric" WidthRequest="80" />
+                <Entry x:Name="Point1YEntry" Placeholder="Y" Keyboard="Numeric" WidthRequest="80" />
+                <Button Text="Add by Mouse" Clicked="OnAddPoint1ByMouseClicked"/>
+            </HorizontalStackLayout>
+
+            <!-- Click Point 2 -->
+            <Label Text="Click Point 2 Coordinates (X, Y)" FontAttributes="Bold"/>
+            <HorizontalStackLayout Spacing="10">
+                <Entry x:Name="Point2XEntry" Placeholder="X" Keyboard="Numeric" WidthRequest="80" />
+                <Entry x:Name="Point2YEntry" Placeholder="Y" Keyboard="Numeric" WidthRequest="80" />
+                <Button Text="Add by Mouse" Clicked="OnAddPoint2ByMouseClicked"/>
+            </HorizontalStackLayout>
+
+
+            <!-- Order Picker -->
+            <Label Text="Click Order" FontAttributes="Bold"/>
+            <Picker x:Name="OrderPicker" Title="Select Click Order">
+                <Picker.Items>
+                    <x:String>Point 1 → Point 2</x:String>
+                    <x:String>Point 2 → Point 1</x:String>
+                    <x:String>Alternate</x:String>
+                </Picker.Items>
+            </Picker>
+
+            <!-- Start Button -->
+            <Button Text="Start Clicking"
+                    x:Name="StartClickButton"
+                    Clicked="OnStartClick"
+                    BackgroundColor="Green"
+                    TextColor="White"
+                    CornerRadius="10"
+                    Padding="10"
+                    FontAttributes="Bold"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
