@@ -32,7 +32,7 @@ jobs:
           zip -r auto_cliker.app.zip auto_cliker.app
 
       - name: Upload .app artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: macos-app
           path: auto_cliker/bin/Release/net8.0-maccatalyst/auto_cliker.app.zip
