@@ -15,7 +15,6 @@ using System.Runtime.InteropServices;
 #elif MACCATALYST
 using CoreGraphics;
 using AppKit;
-using UIKit;
 using ObjCRuntime;
 using Foundation;
 using System.Runtime.InteropServices;
