@@ -25,7 +25,8 @@ jobs:
       run: dotnet publish YourProjectName.csproj -f:net9.0-maccatalyst -c:Release -o:publish-macos
 
     - name: Upload Build
-      uses: actions/upload-artifact@v3.1.3
+      uses: https://github.com/actions/upload-artifact@v3
       with:
         name: macos-build
         path: publish-macos/
+
