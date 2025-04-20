@@ -24,9 +24,11 @@ jobs:
     - name: Build MAUI macOS app
       run: dotnet publish YourProjectName.csproj -f:net9.0-maccatalyst -c:Release -o:publish-macos
 
-    - name: Upload Build
-      uses: https://github.com/actions/upload-artifact@v3
+    - name: Commit macOS Build Artifacts
+      uses: EndBug/add-and-commit@v9
       with:
-        name: macos-build
-        path: publish-macos/
+        message: "Add macOS build"
+        add: "publish-macos"
+        new_branch: macos-build-artifacts
+
 
