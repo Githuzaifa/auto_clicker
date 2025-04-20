@@ -33,3 +33,14 @@ jobs:
 
       - name: Build MacCatalyst project
         run: dotnet build -f net8.0-maccatalyst --configuration Release
+
+      - name: Zip MacCatalyst .app bundle
+        run: |
+          cd auto_cliker/bin/Release/net8.0-maccatalyst/
+          zip -r auto_cliker.app.zip auto_cliker.app
+
+      - name: Upload macOS App Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-app
+          path: auto_cliker/bin/Release/net8.0-maccatalyst/auto_cliker.app.zip
