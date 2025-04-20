@@ -10,25 +10,25 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '9.0.x'
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
 
-    - name: Restore dependencies
-      run: dotnet restore
+      - name: Restore dependencies
+        run: dotnet restore
 
-    - name: Build MAUI macOS app
-      run: dotnet publish YourProjectName.csproj -f:net9.0-maccatalyst -c:Release -o:publish-macos
+      - name: Build MAUI macOS app
+        run: dotnet publish auto_cliker/auto_cliker.csproj -f:net9.0-maccatalyst -c:Release -o:publish-macos
 
-    - name: Commit macOS Build Artifacts
-      uses: EndBug/add-and-commit@v9
-      with:
-        message: "Add macOS build"
-        add: "publish-macos"
-        new_branch: macos-build-artifacts
+      - name: List output files (debugging)
+        run: ls -R publish-macos
 
-
+      - name: Upload macOS Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-build
+          path: publish-macos/
