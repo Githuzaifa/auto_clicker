@@ -3,8 +3,6 @@ name: Build macOS MAUI App
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build-macos:
@@ -17,9 +15,6 @@ jobs:
       - name: Select Xcode 15.3
         run: sudo xcode-select -s /Applications/Xcode_15.3.app
 
-      - name: Verify Xcode version
-        run: xcodebuild -version
-
       - name: Setup .NET 9 SDK
         uses: actions/setup-dotnet@v3
         with:
@@ -29,14 +24,14 @@ jobs:
         run: dotnet workload restore
 
       - name: Build MacCatalyst project
-        run: dotnet build -f net8.0-maccatalyst --configuration Release
+        run: dotnet build auto_cliker.csproj -f net8.0-maccatalyst --configuration Release
 
-      - name: Zip the built .app bundle
+      - name: Archive built .app
         run: |
           cd auto_cliker/bin/Release/net8.0-maccatalyst/
           zip -r auto_cliker.app.zip auto_cliker.app
 
-      - name: Upload macOS .app Artifact
+      - name: Upload .app artifact
         uses: actions/upload-artifact@v3
         with:
           name: macos-app
