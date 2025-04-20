@@ -1,4 +1,4 @@
-name: Build macOS
+name: Build macOS MAUI App
 
 on:
   push:
@@ -8,22 +8,28 @@ on:
 
 jobs:
   build-macos:
-    runs-on: macos-13
+    runs-on: macos-14
 
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Select Xcode 15.3
-      run: sudo xcode-select -s /Applications/Xcode_15.3.app
+      - name: List installed Xcode versions (optional)
+        run: ls /Applications | grep Xcode
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '9.0.x'
+      - name: Select Xcode 15.3
+        run: sudo xcode-select -s /Applications/Xcode_15.3.app
 
-    - name: Install MAUI Workload
-      run: dotnet workload restore
+      - name: Verify Xcode version
+        run: xcodebuild -version
 
-    - name: Build for MacCatalyst
-      run: dotnet build -f net9.0-maccatalyst --configuration Release
+      - name: Set up .NET SDK 9
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore workloads
+        run: dotnet workload restore
+
+      - name: Build MacCatalyst project
+        run: dotnet build -f net8.0-maccatalyst --configuration Release
